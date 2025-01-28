@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  moonibot:
+    image: moonibot:1.0
+    container_name: worker
+    build:
+      context: .
+      dockerfile: Worker/Dockerfile
+    restart: always
+    environment:
+      - TZ=Europe/Moskow
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    ports:
+      - "5000:80"

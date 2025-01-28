@@ -1,0 +1,14 @@
+.idea/
+Worker/bin/
+Worker/obj/
+Application/bin/
+Application/obj/
+Infrastructure/bin/
+Infrastructure/obj/
+Domain/bin/
+Domain/obj/
+
+Worker/Logs/
+Worker/appsettings*.json
+
+Moonibot.sln.DotSettings.user
