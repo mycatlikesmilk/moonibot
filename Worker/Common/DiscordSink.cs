@@ -13,7 +13,7 @@ public class DiscordSink(string webhookUrl) : ILogEventSink
         
         var message = new
         {
-            content = $"`[{logEvent.Timestamp:HH:mm:ss} {logEvent.Level.ToString()[..3].ToUpper()}] [{source.ToString().Trim('"').Split('.').Last()}]  {logEvent.RenderMessage()}`"
+            content = $"```\n[{logEvent.Timestamp:HH:mm:ss} {logEvent.Level.ToString()[..3].ToUpper()}] [{source.ToString().Trim('"').Split('.').Last()}]  {logEvent.RenderMessage()}\n```"
         };
         
         var json = System.Text.Json.JsonSerializer.Serialize(message);
