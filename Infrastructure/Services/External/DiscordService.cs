@@ -1,4 +1,5 @@
 ﻿using Application.Common.Constants;
+using Application.Common.Extensions;
 using Application.Services.ExternalServices;
 using Discord;
 using Discord.WebSocket;
@@ -8,32 +9,35 @@ using Microsoft.Extensions.Logging;
 namespace Infrastructure.Services.External;
 
 public class DiscordService(
-    IConfiguration config,
+    IConfiguration configuration,
     ILogger<DiscordService> logger)
     : IDiscordService
 {
-    private DiscordSocketClient _client;
+    public DiscordSocketClient DiscordClient { get; set; }
+    
     private bool _isClientReady;
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var token = config
-            .GetSection("Discord:Credentials")
-            .GetChildren()
-            .FirstOrDefault(x => x["Name"] == "Moonibot")!["AccessToken"];
+        logger.LogInformation("Starting Main Discord service");
+        
+        var token = configuration.GetDiscordToken("Moonibot");
 
         var discordConfig = new DiscordSocketConfig
         {
             GatewayIntents = GatewayIntents.All,
         };
         
-        _client = new DiscordSocketClient(discordConfig);
-        _client.Ready += HandleClientReady;
-        _client.MessageReceived += HandleMessageReceived;
+        DiscordClient = new DiscordSocketClient(discordConfig);
         
-        await _client.LoginAsync(TokenType.Bot, token);
-        await _client.StartAsync();
+        DiscordClient.Ready += HandleDiscordClientReady;
+        DiscordClient.MessageReceived += HandleMessageReceived;
+        
+        await DiscordClient.LoginAsync(TokenType.Bot, token);
+        await DiscordClient.StartAsync();
         await WaitDiscordReady();
+        
+        logger.LogInformation("Main Discord service started successfully");
     }
 
     private async Task HandleMessageReceived(SocketMessage arg)
@@ -41,7 +45,7 @@ public class DiscordService(
         throw new NotImplementedException();
     }
 
-    private Task HandleClientReady()
+    private Task HandleDiscordClientReady()
     {
         _isClientReady = true;
         logger.LogInformation(LogMessages.DiscordServiceConnected);
@@ -50,8 +54,9 @@ public class DiscordService(
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        await _client.StopAsync();
-        await _client.LogoutAsync();
+        logger.LogInformation("Stopping Main Discord service");
+        await DiscordClient.StopAsync();
+        await DiscordClient.LogoutAsync();
     }
 
     private async Task WaitDiscordReady()

@@ -22,6 +22,7 @@ public class TwitchService(
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
+        logger.LogInformation("Starting Twitch service");
         Client = new TwitchClient();
         
         var accessToken = config
@@ -41,6 +42,7 @@ public class TwitchService(
         
         Client.Initialize(credentials, ConnectedChannel);
         Client.Connect();
+        logger.LogInformation("Twitch service started successfully");
         return Task.CompletedTask;
     }
 
@@ -57,6 +59,7 @@ public class TwitchService(
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
+        logger.LogInformation("Stopping Twitch service");
         Client.Disconnect();
         return Task.CompletedTask;
     }

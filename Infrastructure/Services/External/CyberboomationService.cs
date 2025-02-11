@@ -22,7 +22,7 @@ public class CyberboomationService(
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("Starting Discord service");
+        logger.LogInformation("Starting Cyberboomation service");
 
         var token = configuration.GetDiscordToken("Cyberboomation");
 
@@ -40,7 +40,7 @@ public class CyberboomationService(
         await _client.StartAsync();
         await WaitDiscordReady();
         
-        logger.LogInformation("Discord service started successfully");
+        logger.LogInformation("Cyberboomation service started successfully");
     }
 
     public async Task<bool> SendMessageAsync(ulong channelId, string message)
@@ -77,7 +77,7 @@ public class CyberboomationService(
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("Stopping Discord service");
+        logger.LogInformation("Stopping Cyberboomation service");
         await _client.LogoutAsync();
         await _client.StopAsync();
     }

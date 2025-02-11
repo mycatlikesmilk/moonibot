@@ -23,4 +23,14 @@ public static class ConfigExtensions
 
         return ulong.TryParse(channel["Id"], out var output) ? output : 0;
     }
+
+    public static string GetTelegramToken(this IConfiguration configuration, string name)
+    {
+        var credentials = configuration
+            .GetSection("Telegram:Credentials")
+            .GetChildren()
+            .FirstOrDefault(x => x["Name"] == name);
+
+        return credentials?["Token"] ?? String.Empty;
+    }
 }
